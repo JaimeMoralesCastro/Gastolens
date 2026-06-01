@@ -1,0 +1,516 @@
+% ═══════════════════════════════════════════════════════════════
+%  GASTOLENS — Technical Product Overview
+%  Compilar con: pdflatex (dos pasadas) — Overleaf o local
+% ═══════════════════════════════════════════════════════════════
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{tcolorbox}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{textcomp}
+\usepackage{etoolbox}
+
+\tcbuselibrary{most,skins}
+
+\geometry{a4paper,top=1.8cm,bottom=1.8cm,left=2cm,right=2cm}
+
+% ── Palette ───────────────────────────────────────────────────────────────────
+\definecolor{bg}{HTML}{000000}
+\definecolor{bgcard}{HTML}{0D0D0D}
+\definecolor{bgcard2}{HTML}{131313}
+\definecolor{bdr}{HTML}{1F1F1F}
+\definecolor{bdr2}{HTML}{2A2A2A}
+\definecolor{ngreen}{HTML}{00FF88}
+\definecolor{ncyan}{HTML}{00D4FF}
+\definecolor{npurple}{HTML}{9B59FF}
+\definecolor{norange}{HTML}{FF8C42}
+\definecolor{nred}{HTML}{FF4757}
+\definecolor{tw}{HTML}{D4D4D4}
+\definecolor{tm}{HTML}{737373}
+\definecolor{td}{HTML}{404040}
+
+\pagecolor{bg}
+\color{tw}
+
+\hypersetup{colorlinks=true,urlcolor=ncyan,hidelinks}
+
+% ── Section titles ────────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{ngreen}}{}{0em}{}
+  [\vspace{2pt}\textcolor{bdr2}{\rule{\linewidth}{0.4pt}}\vspace{-4pt}]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{ncyan}}{}{0em}{}
+\titlespacing{\section}{0pt}{14pt}{5pt}
+\titlespacing{\subsection}{0pt}{8pt}{3pt}
+
+% ── tcolorbox styles ──────────────────────────────────────────────────────────
+\tcbset{
+  databox/.style={enhanced,colback=bgcard2,colframe=bdr2,coltext=tw,arc=4pt,
+    boxrule=0.4pt,left=8pt,right=8pt,top=6pt,bottom=6pt},
+  greenbox/.style={databox,colframe=ngreen!20,
+    borderline west={1.5pt}{0pt}{ngreen!60}},
+  cyanbox/.style={databox,colframe=ncyan!20,
+    borderline west={1.5pt}{0pt}{ncyan!60}},
+  purplebox/.style={databox,colframe=npurple!20,
+    borderline west={1.5pt}{0pt}{npurple!60}},
+  orangebox/.style={databox,colframe=norange!20,
+    borderline west={1.5pt}{0pt}{norange!60}},
+}
+
+\setlength{\parskip}{3pt}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{14pt}
+
+% Fuerza color tw en todo texto de tablas y reglas visibles
+\AtBeginEnvironment{tabular}{\color{tw}}
+\arrayrulecolor{bdr2}
+
+% =============================================================================
+\begin{document}
+
+% ┌──────────────────────────────────────────────────────────────────────────┐
+% │  PAGE 1 — COVER                                                          │
+% └──────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{center}
+
+  {\fontsize{84}{84}\selectfont\color{ngreen}\faWallet}
+
+  \vspace{1.4cm}
+
+  {\fontsize{46}{46}\selectfont\bfseries\color{tw} GASTOLENS}
+
+  \vspace{0.5cm}
+  {\color{bdr2}\rule{10cm}{0.4pt}}
+  \vspace{0.5cm}
+
+  {\large\color{tm} Technical Product Overview}
+
+  \vspace{3cm}
+
+  {\small\color{tm}
+    React 18 $\;\cdot\;$ Vite 5 $\;\cdot\;$ Supabase
+    $\;\cdot\;$ PostgreSQL $\;\cdot\;$ Tailwind CSS $\;\cdot\;$ PWA
+  }
+
+  \vspace{0.7cm}
+
+  {\footnotesize\color{td}
+    v1.0 $\;\cdot\;$ May 2025
+    $\;\cdot\;$ {\color{ncyan}\texttt{gastolens.vercel.app}}
+  }
+
+\end{center}
+
+\vspace*{\fill}
+\newpage
+
+% ┌──────────────────────────────────────────────────────────────────────────┐
+% │  PAGE 2 — PRODUCT & ARCHITECTURE                                         │
+% └──────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{Product Summary}
+
+{\small
+GastoLens is a production-deployed personal finance PWA that removes the
+friction of expense logging. Users describe transactions in plain language ---
+\textit{``dinner with friends 45 euros''} --- and the built-in NLP engine
+automatically extracts the amount, currency, and category. Voice input via
+the Web Speech API is also supported. The app is live at
+{\color{ncyan}\texttt{gastolens.vercel.app}}, fully authenticated, backed
+by Supabase PostgreSQL with Row Level Security, and synchronises in real
+time across all devices with zero infrastructure cost (free tiers).
+}
+
+\vspace{6pt}
+
+\begin{multicols}{2}
+\subsection{Frontend}
+
+{\small
+\begin{tabular}{@{}ll@{}}
+  {\color{ngreen}\bfseries React 18}     & Hooks, Context API, JSX \\
+  {\color{ngreen}\bfseries Vite 5}       & Build tool, HMR, asset pipeline \\
+  {\color{ngreen}\bfseries Tailwind 3}   & Utility-first, neon palette \\
+  {\color{ngreen}\bfseries Recharts 2}   & Donut + daily line charts \\
+  {\color{ngreen}\bfseries Lucide React} & Consistent icon library \\
+\end{tabular}
+}
+
+\columnbreak
+
+\subsection{Backend \& Infrastructure}
+
+{\small
+\begin{tabular}{@{}ll@{}}
+  {\color{ncyan}\bfseries Supabase}      & PostgreSQL + Auth + Realtime \\
+  {\color{ncyan}\bfseries Vercel}        & Deploy, CDN global, HTTPS \\
+  {\color{ncyan}\bfseries Service Worker}& PWA cache v3, offline support \\
+  {\color{ncyan}\bfseries Web Speech API}& Voice recognition (es-ES) \\
+\end{tabular}
+}
+\end{multicols}
+
+\vspace{6pt}
+
+\subsection{Application Architecture}
+
+\begin{tcolorbox}[cyanbox]
+{\small
+\begin{tabular}{@{}p{2.6cm}p{12.8cm}@{}}
+  {\color{ncyan}\bfseries UI Layer} &
+    React components: \textit{App, Navigation, BalanceCards, ExpenseInput,
+    Charts, ExpenseHistory, ExpenseDetail, AuthScreen} \\[3pt]
+  {\color{ncyan}\bfseries Logic Layer} &
+    Custom hooks --- \texttt{useExpenses} (CRUD + realtime sync),
+    \texttt{useAuth} (JWT session management),
+    \texttt{useSpeech} (voice transcription) \\[3pt]
+  {\color{ncyan}\bfseries State Layer} &
+    Context API: \texttt{AuthContext} wraps the Supabase session and
+    exposes \texttt{user / login / register / logout} globally \\[3pt]
+  {\color{ncyan}\bfseries NLP Layer} &
+    Pure JavaScript parser: numeric normalisation
+    $\rightarrow$ amount extraction $\rightarrow$ keyword category scoring \\[3pt]
+  {\color{ncyan}\bfseries Data Layer} &
+    \texttt{@supabase/supabase-js} client, environment-variable configured,
+    zero secrets committed to source \\[3pt]
+  {\color{ncyan}\bfseries Cloud Layer} &
+    Supabase Cloud: PostgreSQL 15, GoTrue Auth, Realtime WebSocket engine \\
+\end{tabular}
+}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\subsection{Database Schema --- \texttt{public.expenses}}
+
+\begin{tcolorbox}[databox]
+{\small
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  {\color{ncyan}Column} & {\color{ncyan}Type} & {\color{ncyan}Notes} \\
+  \midrule
+  {\color{ngreen}\ttfamily id}
+    & {\color{tm}\ttfamily uuid PK}
+    & \texttt{gen\_random\_uuid()} \\
+  {\color{ngreen}\ttfamily user\_id}
+    & {\color{tm}\ttfamily uuid FK}
+    & references \texttt{auth.users} \\
+  {\color{tw}\ttfamily amount}
+    & {\color{tm}\ttfamily decimal(10,2)}
+    & stored in EUR after conversion \\
+  {\color{tw}\ttfamily original\_amount}
+    & {\color{tm}\ttfamily decimal(10,2)}
+    & amount in source currency \\
+  {\color{tw}\ttfamily currency}
+    & {\color{tm}\ttfamily text}
+    & \texttt{EUR} / \texttt{RON} / \texttt{USD} \\
+  {\color{tw}\ttfamily category}
+    & {\color{tm}\ttfamily text}
+    & NLP-assigned main category \\
+  {\color{tw}\ttfamily subcategory}
+    & {\color{tm}\ttfamily text}
+    & one of 40+ detected subcategories \\
+  {\color{tw}\ttfamily description}
+    & {\color{tm}\ttfamily text}
+    & NLP-generated readable label \\
+  {\color{tw}\ttfamily raw\_text}
+    & {\color{tm}\ttfamily text}
+    & original unmodified user input \\
+  {\color{tw}\ttfamily date}
+    & {\color{tm}\ttfamily timestamptz}
+    & expense timestamp \\
+  \bottomrule
+\end{tabular}
+}
+\vspace{4pt}
+
+{\color{ngreen}\small\bfseries RLS Policy:}~~
+{\color{tm}\small\ttfamily USING (auth.uid() = user\_id)}~~
+{\color{tm}\small --- each user can only read and write their own rows.}
+\end{tcolorbox}
+
+\newpage
+
+% ┌──────────────────────────────────────────────────────────────────────────┐
+% │  PAGE 3 — NLP ENGINE + FEATURES + SECURITY                               │
+% └──────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{NLP Engine}
+
+{\small
+The core differentiator of GastoLens is a custom, fully client-side NLP
+parser written in vanilla JavaScript. It operates on free-form Spanish text
+in three sequential phases:
+}
+
+\vspace{4pt}
+
+\begin{tcolorbox}[greenbox]
+{\small
+\begin{tabular}{@{}cp{13.8cm}@{}}
+  {\color{ngreen}\bfseries 1} &
+    \textbf{\color{tw}Numeric normalisation} ---
+    converts Spanish number words to digits.
+    \textit{``treinta y cinco''} $\rightarrow$ \texttt{35}.
+    Handles compounds up to the thousands and mixed forms
+    (\textit{``dos mil cuatrocientos cincuenta y tres''} $\rightarrow$ \texttt{2453}). \\[4pt]
+  {\color{ngreen}\bfseries 2} &
+    \textbf{\color{tw}Amount extraction} ---
+    multi-layer regex pipeline detects: \texttt{45.00},
+    \texttt{45 euros}, \texttt{1.200,50},
+    slang currency (\textit{pavos, cholos, leus}) and
+    multi-currency symbols (EUR, RON, USD, \$).
+    Exchange rates applied automatically on match. \\[4pt]
+  {\color{ngreen}\bfseries 3} &
+    \textbf{\color{tw}Category scoring} ---
+    each token scores against a keyword matrix across all 8 categories
+    (40+ subcategories). The category with highest cumulative score wins.
+    Ties are resolved by token position weight. \\
+\end{tabular}
+}
+\end{tcolorbox}
+
+\vspace{4pt}
+
+\begin{tcolorbox}[databox]
+{\footnotesize
+\begin{tabular}{@{}p{6cm}p{2cm}p{2.2cm}p{4.8cm}@{}}
+  \toprule
+  {\color{ncyan}Input (raw text)} &
+  {\color{ncyan}Amount} &
+  {\color{ncyan}Currency} &
+  {\color{ncyan}Category / Subcategory} \\
+  \midrule
+  \textit{``cena con amigos 45 euros''}       & 45.00 & EUR & Ocio / Restaurantes \\
+  \textit{``supermercado cuarenta euros''}    & 40.00 & EUR & Alimentacion / Supermercado \\
+  \textit{``taxi 12 leus''}                   & 12.00 & RON & Transporte / Taxi \\
+  \textit{``Netflix quince dolares''}         & 15.00 & USD & Ocio / Streaming \\
+  \textit{``treinta y cinco pavos de cena''}  & 35.00 & EUR & Ocio / Restaurantes \\
+  \textit{``farmacia ocho euros''}            & 8.00  & EUR & Salud / Farmacia \\
+  \bottomrule
+\end{tabular}
+}
+\end{tcolorbox}
+
+\vspace{4pt}
+
+\section{Feature Inventory}
+
+\begin{tcolorbox}[databox]
+{\small
+\begin{tabular}{@{}p{4.2cm}p{11.3cm}@{}}
+  \toprule
+  {\color{ncyan}Feature} & {\color{ncyan}Implementation details} \\
+  \midrule
+  Natural language input    & Custom NLP parser, 40+ keyword rules, slang support \\
+  Voice input               & Web Speech API, \texttt{es-ES} locale, real-time transcript \\
+  Auto-categorisation       & 8 categories, 40+ subcategories, keyword scoring matrix \\
+  Multi-currency            & EUR, RON, USD; fixed exchange rates; both amounts stored \\
+  Balance cards             & Today / Week / Month totals, computed on every state update \\
+  Donut chart               & Category breakdown, interactive tooltip with category colour \\
+  Line chart                & Daily spending trend for current month \\
+  Expense history           & Full paginated list, category filter, detail modal per entry \\
+  Real-time sync            & Supabase Realtime \texttt{postgres\_changes} subscription \\
+  Authentication            & Email + password, confirmation email, JWT auto-refresh \\
+  User profile              & Display name independent of email, account creation date \\
+  Offline support           & Service Worker v3, cache-first for hashed assets \\
+  PWA shell                 & Safe-area (iPhone Dynamic Island), home screen icon \\
+  Error handling            & DB error banner, toast notifications, graceful fallback \\
+  \bottomrule
+\end{tabular}
+}
+\end{tcolorbox}
+
+\vspace{4pt}
+
+\section{Security Model}
+
+\begin{multicols}{2}
+\begin{tcolorbox}[greenbox]
+  {\small\bfseries\color{ngreen}Row Level Security (RLS)}\\[3pt]
+  {\small\color{tw}
+    Enabled on \texttt{public.expenses}.
+    Supabase enforces \texttt{auth.uid() = user\_id}
+    at the database level. No application code can
+    bypass this policy --- even a compromised frontend
+    cannot read another user's data.
+  }
+\end{tcolorbox}
+
+\columnbreak
+
+\begin{tcolorbox}[cyanbox]
+  {\small\bfseries\color{ncyan}JWT + Session Management}\\[3pt]
+  {\small\color{tw}
+    Supabase GoTrue issues signed JWTs on login.
+    Tokens auto-refresh before expiry via
+    \texttt{onAuthStateChange} listener.
+    Sessions persist in \texttt{localStorage}
+    with automatic recovery on page load.
+  }
+\end{tcolorbox}
+\end{multicols}
+
+\begin{tcolorbox}[purplebox]
+  {\small\bfseries\color{npurple}Transport Security \& API Isolation}\\[3pt]
+  {\small\color{tw}
+    All client--server traffic uses HTTPS (enforced by Vercel and Supabase).
+    The Service Worker is configured to \emph{never} cache cross-origin
+    requests --- Supabase API calls always bypass the SW and go directly to
+    the network, preventing stale data from being returned.
+    Supabase credentials are stored exclusively as environment variables,
+    absent from the source repository.
+  }
+\end{tcolorbox}
+
+\vspace{4pt}
+
+\section{Market Opportunity}
+
+{\small
+The personal finance app market is valued at \$1.57B (2023, CAGR 5.7\%).
+Mint, the dominant free tracker, was shut down in January 2024, leaving
+millions of users actively seeking alternatives.
+The Spanish-speaking market (500M+ native speakers) has no dominant
+dedicated expense tracker: existing competitors either require bank
+credentials --- which European users widely distrust --- or lack natural
+language input entirely.
+}
+
+\vspace{4pt}
+
+\begin{tcolorbox}[databox]
+{\small
+\begin{tabular}{@{}llll@{}}
+  \toprule
+  {\color{ncyan}Competitor} &
+  {\color{ncyan}Price} &
+  {\color{ncyan}Market} &
+  {\color{ncyan}Gap vs GastoLens} \\
+  \midrule
+  YNAB          & \$109/yr  & USA only  & No NLP, no voice, steep learning curve \\
+  Copilot       & \$95/yr   & USA only  & iOS-only, US bank connection required \\
+  Monarch Money & \$99/yr   & USA only  & Requires bank connection, no NLP \\
+  Fintonic      & Freemium  & Spain     & Requires bank credentials, no NLP \\
+  Mint          & ---       & USA       & \textbf{Discontinued January 2024} \\
+  \bottomrule
+\end{tabular}
+}
+\end{tcolorbox}
+
+\newpage
+
+% ┌──────────────────────────────────────────────────────────────────────────┐
+% │  PAGE 4 — ACQUISITION                                                    │
+% └──────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{Monetisation Paths}
+
+\begin{tcolorbox}[orangebox]
+{\small
+\begin{enumerate}[leftmargin=*,itemsep=3pt,parsep=0pt,topsep=2pt]
+  \item \textbf{\color{norange}Subscription (\$4.99--\$9.99/month)} ---
+    Add Stripe or LemonSqueezy paywall. Backend is already cloud-based;
+    tier enforcement is approximately one weekend of development.
+
+  \item \textbf{\color{norange}Freemium model} ---
+    Free up to 50 expenses/month; paid tier unlocks unlimited entries,
+    CSV/PDF export, and budget goals (designed but not implemented).
+
+  \item \textbf{\color{norange}English NLP + global reach} ---
+    Extending the parser to English takes approximately one week,
+    opening the product to the full global personal finance market.
+
+  \item \textbf{\color{norange}Native mobile app} ---
+    The React codebase wraps with Capacitor to produce iOS and Android
+    binaries for App Store and Google Play distribution.
+
+  \item \textbf{\color{norange}White-label} ---
+    Sell the codebase to fintech companies or banks needing a branded
+    expense tracker for their customers.
+\end{enumerate}
+}
+\end{tcolorbox}
+
+\vspace{4pt}
+
+\section{Assets Included in Sale}
+
+\begin{multicols}{2}
+
+{\small
+\begin{itemize}[leftmargin=*,itemsep=2pt,parsep=0pt,topsep=2pt]
+  \item[\color{ngreen}\faCheck] Full source code (React 18 + Vite 5)
+  \item[\color{ngreen}\faCheck] Custom Spanish NLP engine (core IP)
+  \item[\color{ngreen}\faCheck] Supabase project transfer
+  \item[\color{ngreen}\faCheck] Vercel project transfer (CI/CD pipeline)
+  \item[\color{ngreen}\faCheck] All environment variable configuration
+  \item[\color{ngreen}\faCheck] Brand: name, colour palette, UI design system
+  \item[\color{ngreen}\faCheck] Service Worker (offline + PWA logic)
+  \item[\color{ngreen}\faCheck] Web Speech API integration
+  \item[\color{ngreen}\faCheck] SQL schema + RLS policy definitions
+  \item[\color{ngreen}\faCheck] Technical documentation (PDF)
+\end{itemize}
+}
+
+\columnbreak
+
+{\small
+\textbf{\color{ncyan}Infrastructure at handover:}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt,parsep=0pt,topsep=4pt]
+  \item[$\bullet$] Supabase free tier (\$0/month)
+  \item[$\bullet$] Vercel free tier (\$0/month)
+  \item[$\bullet$] No vendor lock-in
+  \item[$\bullet$] Zero migration required
+\end{itemize}
+
+\vspace{6pt}
+\textbf{\color{ncyan}Not included:}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt,parsep=0pt,topsep=4pt]
+  \item[\color{nred}\faTimes] Paying users or revenue
+  \item[\color{nred}\faTimes] Custom domain (.com)
+  \item[\color{nred}\faTimes] Registered trademark
+  \item[\color{nred}\faTimes] App Store / Play Store listing
+\end{itemize}
+}
+
+\end{multicols}
+
+\vspace{8pt}
+{\color{bdr2}\rule{\linewidth}{0.3pt}}
+\vspace{5pt}
+
+\begin{center}
+{\small\color{tm}
+  \faGlobe~~{\color{ncyan}\texttt{gastolens.vercel.app}}
+  \quad$\cdot$\quad
+  \faCode~~React 18 + Supabase
+  \quad$\cdot$\quad
+  \faClock~~Full handover support provided
+}
+\end{center}
+
+\end{document}

@@ -1,0 +1,833 @@
+% ═══════════════════════════════════════════════════════════════
+%  GASTOLENS — Presentación técnica y visual
+%  Compilar con: pdflatex (dos pasadas) en Overleaf
+% ═══════════════════════════════════════════════════════════════
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{tcolorbox}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{calc}
+
+\usetikzlibrary{positioning,shapes.geometric,calc,
+                fadings,backgrounds,fit,arrows.meta,patterns}
+\pgfplotsset{compat=1.18}
+\tcbuselibrary{most,skins,breakable}
+
+\geometry{a4paper,top=1.6cm,bottom=1.6cm,left=1.8cm,right=1.8cm}
+
+% ── Paleta de colores ─────────────────────────────────────────────────────────
+\definecolor{bg}{HTML}{000000}
+\definecolor{bgcard}{HTML}{0D0D0D}
+\definecolor{bgcard2}{HTML}{131313}
+\definecolor{bgcard3}{HTML}{1A1A1A}
+\definecolor{bdr}{HTML}{1F1F1F}
+\definecolor{bdr2}{HTML}{2A2A2A}
+\definecolor{ngreen}{HTML}{00FF88}
+\definecolor{ncyan}{HTML}{00D4FF}
+\definecolor{npurple}{HTML}{9B59FF}
+\definecolor{norange}{HTML}{FF8C42}
+\definecolor{nred}{HTML}{FF4757}
+\definecolor{nyellow}{HTML}{FFD166}
+\definecolor{npink}{HTML}{FF6B9D}
+\definecolor{tw}{HTML}{D4D4D4}
+\definecolor{tm}{HTML}{737373}
+\definecolor{td}{HTML}{404040}
+\definecolor{catfood}{HTML}{00FF88}
+\definecolor{cattrans}{HTML}{00D4FF}
+\definecolor{catocio}{HTML}{9B59FF}
+\definecolor{catsalud}{HTML}{FF4757}
+\definecolor{cathogar}{HTML}{FF8C42}
+
+\pagecolor{bg}
+\color{tw}
+
+\hypersetup{colorlinks=true,urlcolor=ncyan,linkcolor=ngreen,
+            pdftitle={GastoLens - Presentacion},hidelinks}
+
+% ── Estilos de sección ────────────────────────────────────────────────────────
+\titleformat{\section}{\large\bfseries\color{ngreen}}{}{0em}{}
+  [\vspace{2pt}\textcolor{bdr2}{\rule{\linewidth}{0.5pt}}\vspace{-4pt}]
+\titleformat{\subsection}{\normalsize\bfseries\color{ncyan}}{}{0em}{}
+\titlespacing{\section}{0pt}{18pt}{8pt}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+% ── tcolorbox styles ─────────────────────────────────────────────────────────
+\tcbset{
+  card/.style={enhanced,colback=bgcard,colframe=bdr,arc=7pt,
+    boxrule=0.5pt,left=9pt,right=9pt,top=8pt,bottom=8pt},
+  greencard/.style={card,colframe=ngreen!25,
+    borderline west={2pt}{0pt}{ngreen!60}},
+  cyancard/.style={card,colframe=ncyan!25,
+    borderline west={2pt}{0pt}{ncyan!60}},
+  purplecard/.style={card,colframe=npurple!25,
+    borderline west={2pt}{0pt}{npurple!60}},
+  orangecard/.style={card,colframe=norange!25,
+    borderline west={2pt}{0pt}{norange!60}},
+  herobox/.style={enhanced,colback=bgcard2,colframe=ngreen!20,arc=10pt,
+    boxrule=0.6pt,left=14pt,right=14pt,top=12pt,bottom=12pt},
+}
+
+% ── Comandos auxiliares ───────────────────────────────────────────────────────
+\newcommand{\nline}[1][ngreen]{%
+  \begin{tikzpicture}[baseline=0]
+    \shade[left color=#1!70,right color=bg] (0,-0.5pt) rectangle (\linewidth,0.5pt);
+  \end{tikzpicture}\vspace{2pt}}
+
+\newcommand{\ctag}[2][ncyan]{%
+  \tikz[baseline=(n.base)]\node[inner sep=3pt,rounded corners=3pt,
+    fill=#1!10,draw=#1!35,text=#1,font=\scriptsize\bfseries](n){#2};}
+
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{14pt}
+
+% ═════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │  PORTADA                                                                │
+% └─────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+  % Fondo
+  \fill[bg] (current page.south west) rectangle (current page.north east);
+
+  % Cuadrícula (enteros, sin flotantes)
+  \begin{scope}[opacity=0.07]
+    \foreach \i in {1,2,...,20}{
+      \draw[bdr2,line width=0.2pt]
+        ($(current page.south west)+(\i cm,0)$) --
+        ($(current page.south west)+(\i cm,30cm)$);
+    }
+    \foreach \j in {1,2,...,28}{
+      \draw[bdr2,line width=0.2pt]
+        ($(current page.south west)+(0,\j cm)$) --
+        ($(current page.south west)+(21cm,\j cm)$);
+    }
+  \end{scope}
+
+  % Halos de luz
+  \fill[ngreen,opacity=0.05]  ($(current page.center)+(0,3.5cm)$)  circle (9cm);
+  \fill[ncyan,opacity=0.03]   ($(current page.center)+(-3cm,0)$)   circle (7cm);
+  \fill[npurple,opacity=0.03] ($(current page.center)+(3cm,-2cm)$) circle (5cm);
+
+  % ── Logo ──
+  \begin{scope}[shift={($(current page.center)+(0,6cm)$)}]
+    \fill[bgcard3,rounded corners=18pt] (-1.25cm,-1.25cm) rectangle (1.25cm,1.25cm);
+    \draw[ngreen!50,line width=0.8pt,rounded corners=18pt]
+      (-1.25cm,-1.25cm) rectangle (1.25cm,1.25cm);
+    \draw[ngreen!12,line width=5pt,rounded corners=22pt]
+      (-1.5cm,-1.5cm) rectangle (1.5cm,1.5cm);
+    \node[text=ngreen,font=\fontsize{34}{34}\selectfont] at (0,0) {\faWallet};
+  \end{scope}
+
+  % ── Título ──
+  \node[font=\fontsize{52}{52}\selectfont\bfseries,text=tw]
+    at ($(current page.center)+(0,3.4cm)$) {GASTOLENS};
+
+  % ── Línea decorativa ──
+  \draw[ncyan!45,line width=0.5pt]
+    ($(current page.center)+(-6.5cm,2.45cm)$) --
+    ($(current page.center)+(6.5cm,2.45cm)$);
+
+  % ── Tagline ──
+  \node[font=\large,text=tm]
+    at ($(current page.center)+(0,1.8cm)$)
+    {Control financiero personal $\cdot$ Inteligente $\cdot$ Instantáneo};
+
+  % ── Tres pills (TikZ puro) ──
+  % PWA
+  \begin{scope}[shift={($(current page.center)+(-5cm,0.5cm)$)}]
+    \fill[bgcard2,rounded corners=6pt] (-1.85cm,-0.6cm) rectangle (1.85cm,0.6cm);
+    \draw[ngreen!30,line width=0.5pt,rounded corners=6pt]
+      (-1.85cm,-0.6cm) rectangle (1.85cm,0.6cm);
+    \node[text=ngreen,font=\normalsize] at (-0.8cm,0.15cm) {\faGlobe};
+    \node[text=ngreen,font=\normalsize\bfseries] at (0.35cm,0.15cm) {PWA};
+    \node[text=tm,font=\scriptsize] at (0,-0.2cm) {Responsive y offline};
+  \end{scope}
+  % Multi-device
+  \begin{scope}[shift={($(current page.center)+(0,0.5cm)$)}]
+    \fill[bgcard2,rounded corners=6pt] (-1.85cm,-0.6cm) rectangle (1.85cm,0.6cm);
+    \draw[ncyan!30,line width=0.5pt,rounded corners=6pt]
+      (-1.85cm,-0.6cm) rectangle (1.85cm,0.6cm);
+    \node[text=ncyan,font=\normalsize] at (-1.05cm,0.15cm) {\faSync};
+    \node[text=ncyan,font=\normalsize\bfseries] at (0.25cm,0.15cm) {Multi-device};
+    \node[text=tm,font=\scriptsize] at (0,-0.2cm) {Sync en tiempo real};
+  \end{scope}
+  % NLP + Voz
+  \begin{scope}[shift={($(current page.center)+(5cm,0.5cm)$)}]
+    \fill[bgcard2,rounded corners=6pt] (-1.85cm,-0.6cm) rectangle (1.85cm,0.6cm);
+    \draw[npurple!30,line width=0.5pt,rounded corners=6pt]
+      (-1.85cm,-0.6cm) rectangle (1.85cm,0.6cm);
+    \node[text=npurple,font=\normalsize] at (-0.9cm,0.15cm) {\faMicrophone};
+    \node[text=npurple,font=\normalsize\bfseries] at (0.35cm,0.15cm) {NLP + Voz};
+    \node[text=tm,font=\scriptsize] at (0,-0.2cm) {Lenguaje natural};
+  \end{scope}
+
+  % ── Mockup del teléfono ──
+  \begin{scope}[shift={($(current page.center)+(0,-2.9cm)$)}]
+    % Cuerpo
+    \fill[bgcard,rounded corners=16pt] (-3.5cm,-3.8cm) rectangle (3.5cm,2.8cm);
+    \draw[bdr2,line width=0.6pt,rounded corners=16pt]
+      (-3.5cm,-3.8cm) rectangle (3.5cm,2.8cm);
+    % Pantalla
+    \fill[bg,rounded corners=8pt] (-3.0cm,-3.4cm) rectangle (3.0cm,2.4cm);
+
+    % Tarjetas balance
+    \fill[bgcard2,rounded corners=4pt] (-2.85cm,1.2cm) rectangle (-0.4cm,2.2cm);
+    \node[font=\fontsize{4.5}{4.5}\selectfont,text=tm]
+      at (-1.625cm,2.02cm) {HOY};
+    \node[font=\fontsize{8}{8}\selectfont\bfseries,text=ngreen]
+      at (-1.625cm,1.6cm) {8,00\euro};
+
+    \fill[bgcard2,rounded corners=4pt] (-0.2cm,1.2cm) rectangle (1.4cm,2.2cm);
+    \node[font=\fontsize{4.5}{4.5}\selectfont,text=tm]
+      at (0.6cm,2.02cm) {SEM};
+    \node[font=\fontsize{8}{8}\selectfont\bfseries,text=nyellow]
+      at (0.6cm,1.6cm) {43\euro};
+
+    \fill[bgcard2,rounded corners=4pt] (1.6cm,1.2cm) rectangle (2.9cm,2.2cm);
+    \node[font=\fontsize{4.5}{4.5}\selectfont,text=tm]
+      at (2.25cm,2.02cm) {MES};
+    \node[font=\fontsize{8}{8}\selectfont\bfseries,text=ncyan]
+      at (2.25cm,1.6cm) {324\euro};
+
+    % Input de gastos
+    \fill[bgcard2,rounded corners=4pt] (-2.85cm,0.08cm) rectangle (2.3cm,0.95cm);
+    \node[right,font=\fontsize{4.2}{4.2}\selectfont,text=tm]
+      at (-2.75cm,0.52cm) {Cena con amigos 45\euro...};
+    \fill[ncyan!15,rounded corners=3pt] (2.35cm,0.12cm) rectangle (2.9cm,0.9cm);
+    \node[font=\fontsize{6}{6}\selectfont,text=ncyan] at (2.62cm,0.51cm) {\faPlus};
+
+    % Donut
+    \begin{scope}[shift={(-1.3cm,-1.85cm)},scale=0.48]
+      \fill[catfood]  (0,0) -- (90:2.0cm) arc(90:-48:2.0cm)  -- cycle;
+      \fill[cattrans] (0,0) -- (-50:2.0cm) arc(-50:-128:2.0cm) -- cycle;
+      \fill[catocio]  (0,0) -- (-130:2.0cm) arc(-130:-194:2.0cm) -- cycle;
+      \fill[catsalud] (0,0) -- (-196:2.0cm) arc(-196:-239:2.0cm) -- cycle;
+      \fill[cathogar] (0,0) -- (-241:2.0cm) arc(-241:-268:2.0cm) -- cycle;
+      \fill[bg] (0,0) circle (1.2cm);
+      \fill[bgcard2] (0,0) circle (1.1cm);
+      \node[font=\fontsize{5}{5}\selectfont\bfseries,text=ngreen] at (0,0.12cm) {324\euro};
+      \node[font=\fontsize{3}{3}\selectfont,text=tm] at (0,-0.28cm) {MES};
+    \end{scope}
+
+    % Line chart
+    \begin{scope}[shift={(1.55cm,-2.1cm)},scale=0.5]
+      \draw[bdr2,line width=0.3pt] (-1.7cm,0) -- (1.7cm,0);
+      \draw[ncyan,line width=1.2pt,rounded corners=2pt]
+        (-1.6cm,0.1cm) -- (-1.1cm,0.5cm) -- (-0.5cm,0.2cm)
+        -- (0.1cm,0.9cm) -- (0.5cm,0.4cm) -- (1.0cm,0.8cm) -- (1.5cm,0.6cm);
+      \fill[ncyan] (-1.6cm,0.1cm) circle (1.4pt);
+      \fill[ncyan] (-1.1cm,0.5cm) circle (1.4pt);
+      \fill[ncyan] (-0.5cm,0.2cm) circle (1.4pt);
+      \fill[ncyan] ( 0.1cm,0.9cm) circle (1.4pt);
+      \fill[ncyan] ( 0.5cm,0.4cm) circle (1.4pt);
+      \fill[ncyan] ( 1.0cm,0.8cm) circle (1.4pt);
+      \fill[ncyan] ( 1.5cm,0.6cm) circle (1.4pt);
+    \end{scope}
+
+    % Barra nav
+    \fill[bgcard2] (-3.0cm,-3.35cm) rectangle (3.0cm,-2.72cm);
+    \node[font=\fontsize{7}{7}\selectfont,text=ngreen]  at (-1.5cm,-3.03cm) {\faHome};
+    \node[font=\fontsize{7}{7}\selectfont,text=tm]      at (0cm,   -3.03cm) {\faHistory};
+    \node[font=\fontsize{7}{7}\selectfont,text=tm]      at (1.5cm, -3.03cm) {\faUser};
+  \end{scope}
+
+  % Footer
+  \node[font=\tiny,text=td]
+    at ($(current page.south)+(0,0.8cm)$)
+    {v1.0 $\cdot$ Mayo 2025 $\cdot$ React 18 + Vite 5 + Supabase $\cdot$
+     \texttt{gastolens.vercel.app}};
+\end{tikzpicture}
+\newpage
+
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │  PÁGINA 2 — OVERVIEW + GRÁFICOS                                         │
+% └─────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{¿Qué es GastoLens?}
+
+\begin{tcolorbox}[herobox]
+{\color{tw}\bfseries GastoLens} es una {\color{ngreen}Progressive Web App (PWA)} de control
+financiero personal diseñada para registrar gastos de forma rápida, inteligente y sin fricción.
+El usuario describe sus gastos en {\color{ncyan}lenguaje natural} —o por voz— y la app
+extrae automáticamente el importe, categoría y descripción. Los datos se sincronizan en la
+nube en tiempo real, accesibles desde cualquier dispositivo.
+\end{tcolorbox}
+
+\vspace{8pt}
+
+\begin{multicols}{2}
+
+\subsection{Distribución mensual de gastos}
+
+\vspace{4pt}
+\begin{center}
+\begin{tikzpicture}
+  % Segmentos del donut
+  \fill[catfood]  (0,0) -- (90:2.4cm) arc(90:-48:2.4cm)  -- cycle;
+  \fill[cattrans] (0,0) -- (-50:2.4cm) arc(-50:-128:2.4cm) -- cycle;
+  \fill[catocio]  (0,0) -- (-130:2.4cm) arc(-130:-194:2.4cm) -- cycle;
+  \fill[catsalud] (0,0) -- (-196:2.4cm) arc(-196:-239:2.4cm) -- cycle;
+  \fill[cathogar] (0,0) -- (-241:2.4cm) arc(-241:-268:2.4cm) -- cycle;
+  % Hueco interior
+  \fill[bg] (0,0) circle (1.45cm);
+  \fill[bgcard2] (0,0) circle (1.35cm);
+  % Etiqueta central
+  \node[font=\fontsize{16}{16}\selectfont\bfseries,text=ngreen] at (0,0.22cm) {324\euro};
+  \node[font=\fontsize{7}{7}\selectfont,text=tm] at (0,-0.38cm) {ESTE MES};
+  % Leyenda
+  \foreach \lbl/\clr/\pct [count=\i from 0] in
+    {Alimentaci\'on/catfood/38\%,
+     Transporte/cattrans/22\%,
+     Ocio/catocio/18\%,
+     Salud/catsalud/12\%,
+     Hogar/cathogar/10\%}
+  {
+    \fill[\clr,rounded corners=1pt]
+      (3.0cm,{1.15cm-\i*0.5cm}) rectangle (3.22cm,{1.37cm-\i*0.5cm});
+    \node[right,font=\fontsize{7}{7}\selectfont,text=tw]
+      at (3.28cm,{1.26cm-\i*0.5cm}) {\lbl};
+    \node[right,font=\fontsize{7}{7}\selectfont\bfseries,text=\clr]
+      at (5.05cm,{1.26cm-\i*0.5cm}) {\pct};
+  }
+\end{tikzpicture}
+\end{center}
+
+\vspace{6pt}
+{\color{tm}\scriptsize El gráfico de distribución clasifica automáticamente cada gasto
+por categoría. Al interactuar con cada sector aparece el detalle del importe y
+el porcentaje que representa, en el color propio de la categoría.}
+
+\columnbreak
+
+\subsection{Evolución diaria del mes}
+
+\vspace{4pt}
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.98\columnwidth, height=5.2cm,
+  axis line style={draw=bdr2},
+  tick style={draw=none},
+  xticklabel style={font=\fontsize{6}{6}\selectfont,color=tm},
+  yticklabel style={font=\fontsize{6}{6}\selectfont,color=tm,
+                    /pgf/number format/.cd,fixed,precision=0},
+  yticklabel={\pgfmathprintnumber{\tick}\euro},
+  xtick={1,5,10,15,20,25,31},
+  xticklabels={1,5,10,15,20,25,31},
+  ytick={0,20,40,60,80},
+  grid=both,
+  grid style={line width=0.2pt,draw=bdr},
+  axis background/.style={fill=bgcard2},
+  xmin=1,xmax=31,ymin=0,ymax=90,
+  clip=false,
+]
+  \addplot[ncyan!30,fill=ncyan!6,area style]
+    coordinates{(1,0)(1,8)(3,0)(4,22)(5,0)(6,45)(7,0)(8,15)(10,0)
+                (11,33)(13,0)(14,55)(16,0)(17,28)(18,0)(19,12)
+                (21,0)(22,40)(24,0)(25,18)(27,0)(28,62)(30,0)(31,0)};
+  \addplot[ncyan,line width=1.4pt,smooth]
+    coordinates{(1,8)(4,22)(6,45)(8,15)(11,33)(14,55)(17,28)(19,12)(22,40)(25,18)(28,62)};
+  \addplot[only marks,mark=*,mark size=2pt,ncyan]
+    coordinates{(1,8)(4,22)(6,45)(8,15)(11,33)(14,55)(17,28)(19,12)(22,40)(25,18)(28,62)};
+  \addplot[only marks,mark=*,mark size=3.5pt,ngreen]
+    coordinates{(14,55)};
+\end{axis}
+\end{tikzpicture}
+
+\vspace{4pt}
+{\color{tm}\scriptsize La gráfica muestra el gasto diario a lo largo del mes en curso.
+Permite detectar de un vistazo los días de mayor consumo y la tendencia general.}
+
+\end{multicols}
+
+\vspace{4pt}
+\nline[ncyan]
+\vspace{4pt}
+
+\subsection{Tarjetas de balance en tiempo real}
+
+\begin{center}
+\begin{tikzpicture}
+  % HOY
+  \fill[bgcard2,rounded corners=8pt] (0,0) rectangle (4.8cm,1.7cm);
+  \draw[ngreen!30,line width=0.5pt,rounded corners=8pt] (0,0) rectangle (4.8cm,1.7cm);
+  \node[font=\fontsize{6.5}{6.5}\selectfont,text=tm] at (2.4cm,1.38cm) {HOY};
+  \node[font=\fontsize{5}{5}\selectfont,text=tm] at (0.55cm,1.38cm) {\faSun};
+  \node[font=\fontsize{18}{18}\selectfont\bfseries,text=ngreen] at (2.4cm,0.68cm) {8,00\,\euro};
+
+  % SEMANA
+  \fill[bgcard2,rounded corners=8pt] (5.4cm,0) rectangle (10.2cm,1.7cm);
+  \draw[nyellow!30,line width=0.5pt,rounded corners=8pt] (5.4cm,0) rectangle (10.2cm,1.7cm);
+  \node[font=\fontsize{6.5}{6.5}\selectfont,text=tm] at (7.8cm,1.38cm) {SEMANA};
+  \node[font=\fontsize{5}{5}\selectfont,text=tm] at (5.95cm,1.38cm) {\faCalendarAlt};
+  \node[font=\fontsize{18}{18}\selectfont\bfseries,text=nyellow] at (7.8cm,0.68cm) {43,80\,\euro};
+
+  % MES
+  \fill[bgcard2,rounded corners=8pt] (10.8cm,0) rectangle (15.6cm,1.7cm);
+  \draw[ncyan!30,line width=0.5pt,rounded corners=8pt] (10.8cm,0) rectangle (15.6cm,1.7cm);
+  \node[font=\fontsize{6.5}{6.5}\selectfont,text=tm] at (13.2cm,1.38cm) {MES};
+  \node[font=\fontsize{5}{5}\selectfont,text=tm] at (11.35cm,1.38cm) {\faChartLine};
+  \node[font=\fontsize{18}{18}\selectfont\bfseries,text=ncyan] at (13.2cm,0.68cm) {324,00\,\euro};
+\end{tikzpicture}
+\end{center}
+
+{\color{tm}\footnotesize Las tarjetas se actualizan en tiempo real con cada gasto registrado,
+calculando automáticamente los totales del día, la semana (lun–dom) y el mes en curso.}
+
+\newpage
+
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │  PÁGINA 3 — FUNCIONALIDADES                                             │
+% └─────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{Funcionalidades principales}
+
+\begin{multicols}{2}
+
+\begin{tcolorbox}[greencard]
+  {\color{ngreen}\Large\faCommentDots}~~{\color{ngreen}\normalsize\bfseries Lenguaje natural}
+  \tcblower
+  \color{tw}
+  Describe el gasto como lo harías hablando. El motor NLP extrae el importe,
+  moneda, categoría y descripción de forma automática.
+
+  \vspace{4pt}
+  \begin{tcolorbox}[card,colback=bg,colframe=bdr,left=6pt,right=6pt,top=4pt,bottom=4pt]
+    {\color{tm}\scriptsize\faKeyboard}~~{\color{ncyan}\scriptsize\itshape
+    ``Cena con amigos 45€ el sábado''}\\[3pt]
+    {\color{tm}\scriptsize\faArrowRight}~~{\color{tw}\scriptsize
+    Restaurantes $\cdot$ 45,00\,\euro\ $\cdot$ Ocio}
+  \end{tcolorbox}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\begin{tcolorbox}[cyancard]
+  {\color{ncyan}\Large\faMicrophone}~~{\color{ncyan}\normalsize\bfseries Entrada por voz}
+  \tcblower
+  \color{tw}
+  Integración con la Web Speech API en español (\texttt{es-ES}).
+  Pulsa el micrófono, habla y el texto transcrito se procesa igual
+  que si lo hubieses escrito.
+
+  \vspace{4pt}
+  \ctag[ncyan]{es-ES}~~\ctag[ncyan]{Web Speech API}~~\ctag[ncyan]{Tiempo real}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\begin{tcolorbox}[purplecard]
+  {\color{npurple}\Large\faTags}~~{\color{npurple}\normalsize\bfseries Categorización automática}
+  \tcblower
+  \color{tw}
+  Clasificación en 8 categorías con más de 40 subcategorías mediante
+  puntuación por palabras clave. Cada categoría tiene su color e icono.
+
+  \vspace{4pt}
+  \begin{center}
+  \begin{tabular}{@{}ll@{\quad}ll@{}}
+    \color{catfood}\faUtensils   & \color{tw}\scriptsize Alimentación &
+    \color{cattrans}\faBus       & \color{tw}\scriptsize Transporte \\[3pt]
+    \color{catocio}\faGamepad    & \color{tw}\scriptsize Ocio         &
+    \color{catsalud}\faHeartbeat & \color{tw}\scriptsize Salud       \\[3pt]
+    \color{cathogar}\faHome      & \color{tw}\scriptsize Hogar        &
+    \color{npink}\faTshirt       & \color{tw}\scriptsize Ropa        \\[3pt]
+    \color{nyellow}\faLaptop     & \color{tw}\scriptsize Tecnología   &
+    \color{tm}\faEllipsisH       & \color{tw}\scriptsize Otros       \\
+  \end{tabular}
+  \end{center}
+\end{tcolorbox}
+
+\columnbreak
+
+\begin{tcolorbox}[orangecard]
+  {\color{norange}\Large\faCoins}~~{\color{norange}\normalsize\bfseries Multi-divisa}
+  \tcblower
+  \color{tw}
+  Soporte nativo para EUR, RON y USD con conversión automática.
+  El detalle de cada gasto muestra el importe original y el equivalente en euros.
+
+  \vspace{4pt}
+  \begin{center}
+  \begin{tabular}{lrp{3cm}}
+    \toprule
+    \color{tm}\scriptsize Divisa &
+    \color{tm}\scriptsize Tasa &
+    \color{tm}\scriptsize Sinónimos \\
+    \midrule
+    \color{norange}\scriptsize\bfseries EUR &
+      \color{tw}\scriptsize 1{,}0000 &
+      \color{tm}\scriptsize euros, pavos, cholos \\
+    \color{nyellow}\scriptsize\bfseries RON &
+      \color{tw}\scriptsize 0{,}2012 &
+      \color{tm}\scriptsize lei, leus, ron \\
+    \color{ngreen}\scriptsize\bfseries USD &
+      \color{tw}\scriptsize 0{,}9259 &
+      \color{tm}\scriptsize dólares, \$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\begin{tcolorbox}[greencard]
+  {\color{ngreen}\Large\faDatabase}~~{\color{ngreen}\normalsize\bfseries Sincronización en la nube}
+  \tcblower
+  \color{tw}
+  Datos en {\color{ngreen}Supabase (PostgreSQL)} con Row Level Security.
+  Cada usuario accede exclusivamente a sus datos. Sincronización en
+  {\color{ncyan}tiempo real} mediante Realtime Subscriptions.
+
+  \vspace{4pt}
+  \ctag[ngreen]{RLS}~~\ctag[ngreen]{Realtime}~~\ctag[ngreen]{Multi-device}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\begin{tcolorbox}[cyancard]
+  {\color{ncyan}\Large\faMobileAlt}~~{\color{ncyan}\normalsize\bfseries PWA Responsive}
+  \tcblower
+  \color{tw}
+  Diseño adaptado a cualquier pantalla y dispositivo. Incluye Service Worker
+  para funcionamiento \textit{offline}, soporte de \textit{safe-area}
+  para Dynamic Island de iPhone e icono en pantalla de inicio.
+
+  \vspace{4pt}
+  \ctag[ncyan]{iOS Safari}~~\ctag[ncyan]{Android Chrome}~~\ctag[ncyan]{Offline-ready}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\begin{tcolorbox}[purplecard]
+  {\color{npurple}\Large\faListAlt}~~{\color{npurple}\normalsize\bfseries Historial y detalle}
+  \tcblower
+  \color{tw}
+  Listado completo con búsqueda y filtros por categoría. Cada gasto tiene
+  una {\color{npurple}vista de detalle} con categoría, subcategoría,
+  texto original, importe y marca de tiempo.
+\end{tcolorbox}
+
+\end{multicols}
+
+\newpage
+
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │  PÁGINA 4 — CÓMO FUNCIONA                                               │
+% └─────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{¿Cómo funciona?}
+
+\subsection{Flujo completo de un gasto}
+
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw,rounded corners=6pt,fill=bgcard2,minimum width=2.7cm,
+              minimum height=1.1cm,text width=2.5cm,align=center,
+              font=\fontsize{7.5}{9}\selectfont,text=tw},
+  arr/.style={-{Stealth[length=4pt]},color=ncyan!60,line width=0.8pt},
+  lbl/.style={font=\fontsize{6}{6}\selectfont,text=tm,align=center},
+  node distance=0.5cm and 0.9cm,
+]
+  \node[box,draw=ncyan!40]    (inp) {\color{ncyan}\faPenAlt\\[3pt]   Texto o voz\\del usuario};
+  \node[box,draw=npurple!40,right=of inp]  (nlp) {\color{npurple}\faCogs\\[3pt]   Parser NLP\\normalización};
+  \node[box,draw=nyellow!40,right=of nlp]  (cat) {\color{nyellow}\faTags\\[3pt]   Clasificación\\categoría};
+  \node[box,draw=norange!40,right=of cat]  (fx)  {\color{norange}\faExchangeAlt\\[3pt] Conversión\\divisa};
+  \node[box,draw=ngreen!40,right=of fx]    (db)  {\color{ngreen}\faDatabase\\[3pt]  Guardado\\Supabase};
+  \node[box,draw=ncyan!40,right=of db]     (ui)  {\color{ncyan}\faChartPie\\[3pt]  Update\\gráficos};
+
+  \draw[arr] (inp) -- (nlp);
+  \draw[arr] (nlp) -- (cat);
+  \draw[arr] (cat) -- (fx);
+  \draw[arr] (fx)  -- (db);
+  \draw[arr] (db)  -- (ui);
+
+  \node[lbl,below=0.15cm of inp]  {``cena 45€''};
+  \node[lbl,below=0.15cm of nlp]  {45.0 EUR};
+  \node[lbl,below=0.15cm of cat]  {Ocio/Rest.};
+  \node[lbl,below=0.15cm of fx]   {45,00\,€};
+  \node[lbl,below=0.15cm of db]   {INSERT SQL};
+  \node[lbl,below=0.15cm of ui]   {React state};
+\end{tikzpicture}
+\end{center}
+
+\vspace{8pt}
+
+\subsection{Motor NLP — detección de importes en español}
+
+\begin{multicols}{2}
+El parser opera en tres fases sobre el texto de entrada:
+
+\begin{enumerate}[leftmargin=*,itemsep=3pt,parsep=0pt,topsep=4pt]
+  \item {\color{ngreen}\bfseries Normalización numérica}:
+    convierte palabras numéricas españolas a dígitos.
+    \textit{``treinta y cinco''} $\rightarrow$ \texttt{35}.
+
+  \item {\color{ncyan}\bfseries Extracción de importe}:
+    regex multicapa que detecta \texttt{45€}, \texttt{45 euros},
+    \texttt{1.200,50} o \texttt{doce pavos}.
+
+  \item {\color{npurple}\bfseries Clasificación}:
+    sistema de puntuación por palabras clave. Cada token suma puntos
+    a las categorías candidatas. Gana la de mayor puntuación.
+\end{enumerate}
+
+\columnbreak
+
+\begin{tcolorbox}[card,colframe=bdr2,colback=bg]
+{\color{tm}\scriptsize\bfseries EJEMPLOS DE ENTRADA}\vspace{4pt}
+
+\begin{tabular}{@{}ll@{}}
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Pagué la luz 85\euro \\
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Supermercado cuarenta euros \\
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Taxi 12 leus \\
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Netflix 15 dólares \\
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Café rápido 2,50€ \\
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Ochenta y cinco pavos de cena \\
+  \color{ncyan}\scriptsize\faCheck &
+    \color{tw}\scriptsize Farmacia 8 euros \\
+\end{tabular}
+\end{tcolorbox}
+
+\end{multicols}
+
+\vspace{8pt}
+\nline[ncyan]
+\vspace{8pt}
+
+\subsection{Autenticación y seguridad}
+
+% Estilos del diagrama de auth definidos fuera del tikzpicture
+% para evitar conflicto con los estilos globales del diagrama de flujo
+\tikzset{
+  authstep/.style={draw,rounded corners=6pt,fill=bgcard2,
+                   minimum width=3.0cm,minimum height=1.2cm,
+                   text width=2.7cm,align=center,
+                   font=\fontsize{7.5}{9}\selectfont,text=tw},
+}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.4cm and 0.7cm]
+  \node[authstep,draw=ngreen!30]               (reg)
+    {\color{ngreen}\faUserPlus\\[3pt] Registro\\email + clave};
+  \node[authstep,draw=ncyan!30, right=of reg]  (mail)
+    {\color{ncyan}\faEnvelope\\[3pt] Email\\confirmaci\'on};
+  \node[authstep,draw=npurple!30,right=of mail] (sess)
+    {\color{npurple}\faKey\\[3pt] JWT Session\\auto-refresh};
+  \node[authstep,draw=ngreen!30, right=of sess] (rls)
+    {\color{ngreen}\faShieldAlt\\[3pt] RLS activo\\datos aislados};
+
+  \draw[-{Stealth[length=4pt]},ngreen!60,line width=0.8pt]
+    (reg.east) -- (mail.west);
+  \draw[-{Stealth[length=4pt]},ngreen!60,line width=0.8pt]
+    (mail.east) -- (sess.west);
+  \draw[-{Stealth[length=4pt]},ngreen!60,line width=0.8pt]
+    (sess.east) -- (rls.west);
+
+  \node[below=0.35cm of reg,
+        font=\fontsize{6}{6}\selectfont,text=tm]  {Supabase Auth};
+  \node[below=0.35cm of mail,
+        font=\fontsize{6}{6}\selectfont,text=tm]  {SMTP Supabase};
+  \node[below=0.35cm of sess,
+        font=\fontsize{6}{6}\selectfont,text=tm]  {localStorage};
+  \node[below=0.35cm of rls,
+        font=\fontsize{6}{6}\selectfont,text=tm]  {\texttt{auth.uid()=uid}};
+\end{tikzpicture}
+\end{center}
+
+\vspace{8pt}
+
+\begin{multicols}{3}
+\begin{tcolorbox}[greencard,halign=center]
+  {\color{ngreen}\Large\faShieldAlt}\\[4pt]
+  {\color{ngreen}\bfseries\small Row Level Security}\\[3pt]
+  {\color{tm}\scriptsize Cada usuario accede\\exclusivamente a sus\\registros. Imposible\\ver datos de otros.}
+\end{tcolorbox}
+
+\columnbreak
+
+\begin{tcolorbox}[cyancard,halign=center]
+  {\color{ncyan}\Large\faSync}\\[4pt]
+  {\color{ncyan}\bfseries\small Realtime Sync}\\[3pt]
+  {\color{tm}\scriptsize Subscripción a cambios\\via WebSocket. Cambios\\en un dispositivo se\\reflejan al instante.}
+\end{tcolorbox}
+
+\columnbreak
+
+\begin{tcolorbox}[purplecard,halign=center]
+  {\color{npurple}\Large\faLock}\\[4pt]
+  {\color{npurple}\bfseries\small HTTPS + JWT}\\[3pt]
+  {\color{tm}\scriptsize Todas las peticiones\\van cifradas. El token\\se refresca antes\\de expirar.}
+\end{tcolorbox}
+\end{multicols}
+
+\newpage
+
+% ┌─────────────────────────────────────────────────────────────────────────┐
+% │  PÁGINA 5 — STACK TÉCNICO + ARQUITECTURA                                │
+% └─────────────────────────────────────────────────────────────────────────┘
+\thispagestyle{empty}
+
+\section{Stack técnico}
+
+\begin{multicols}{2}
+
+\subsection{Frontend}
+
+\begin{tcolorbox}[card,colframe=ncyan!20]
+\begin{tabular}{@{}lp{5.0cm}@{}}
+  \color{ncyan}\faAtom & \color{tw}\bfseries React 18\\
+    & \color{tm}\scriptsize Hooks, Context API, componentes funcionales\\[4pt]
+  \color{nyellow}\faTools & \color{tw}\bfseries Vite 5\\
+    & \color{tm}\scriptsize Build tool con HMR instantáneo\\[4pt]
+  \color{ncyan}\faPalette & \color{tw}\bfseries Tailwind CSS 3\\
+    & \color{tm}\scriptsize Utility-first con paleta neon personalizada\\[4pt]
+  \color{ngreen}\faChartPie & \color{tw}\bfseries Recharts 2\\
+    & \color{tm}\scriptsize Gráfico de dona y línea con neon styling\\[4pt]
+  \color{tm}\faStar & \color{tw}\bfseries Lucide React\\
+    & \color{tm}\scriptsize Iconografía consistente y ligera\\
+\end{tabular}
+\end{tcolorbox}
+
+\vspace{6pt}
+
+\subsection{Backend e Infraestructura}
+
+\begin{tcolorbox}[card,colframe=ngreen!20]
+\begin{tabular}{@{}lp{5.0cm}@{}}
+  \color{ngreen}\faDatabase & \color{tw}\bfseries Supabase\\
+    & \color{tm}\scriptsize PostgreSQL $\cdot$ Auth $\cdot$ Realtime $\cdot$ RLS\\[4pt]
+  \color{ncyan}\faCloud & \color{tw}\bfseries Vercel\\
+    & \color{tm}\scriptsize Deploy automático $\cdot$ CDN global $\cdot$ HTTPS\\[4pt]
+  \color{npurple}\faCog & \color{tw}\bfseries Service Worker\\
+    & \color{tm}\scriptsize Cache v3 $\cdot$ network-first HTML $\cdot$ assets cacheados\\[4pt]
+  \color{norange}\faFileCode & \color{tw}\bfseries Web Speech API\\
+    & \color{tm}\scriptsize Reconocimiento de voz nativo (es-ES)\\
+\end{tabular}
+\end{tcolorbox}
+
+\columnbreak
+
+\subsection{Arquitectura por capas}
+
+\begin{tikzpicture}[
+  layer/.style={draw,rounded corners=5pt,minimum width=5.8cm,
+                minimum height=0.72cm,align=center,
+                font=\fontsize{7}{8.5}\selectfont},
+  arr/.style={-{Stealth[length=3.5pt]},line width=0.6pt,color=bdr2},
+  node distance=0.3cm,
+]
+  \node[layer,fill=bgcard2,draw=ncyan!30,text=ncyan] (ui)
+    {\faDesktop~~UI Components (JSX + Tailwind CSS)};
+  \node[layer,fill=bgcard2,draw=npurple!30,text=npurple,below=of ui] (hooks)
+    {\faCubes~~Hooks: useExpenses $\cdot$ useAuth $\cdot$ useSpeech};
+  \node[layer,fill=bgcard2,draw=ngreen!30,text=ngreen,below=of hooks] (ctx)
+    {\faLayerGroup~~Context API: AuthContext};
+  \node[layer,fill=bgcard2,draw=nyellow!30,text=nyellow,below=of ctx] (nlp)
+    {\faBrain~~NLP Parser + Category Config};
+  \node[layer,fill=bgcard2,draw=norange!30,text=norange,below=of nlp] (sb)
+    {\faDatabase~~Supabase Client (\texttt{@supabase/supabase-js})};
+  \node[layer,fill=bgcard,draw=nred!30,text=nred,below=of sb] (cloud)
+    {\faCloud~~Supabase Cloud: PostgreSQL + Auth + Realtime};
+
+  \draw[arr] (ui) -- (hooks);
+  \draw[arr] (hooks) -- (ctx);
+  \draw[arr] (ctx) -- (nlp);
+  \draw[arr] (nlp) -- (sb);
+  \draw[arr] (sb) -- (cloud);
+\end{tikzpicture}
+
+\vspace{8pt}
+
+\subsection{Esquema de la base de datos}
+
+\begin{tcolorbox}[card,colback=bg,colframe=bdr2]
+{\color{tm}\scriptsize\bfseries\ttfamily TABLE expenses}\vspace{3pt}
+
+\begin{tabular}{@{}lll@{}}
+  \color{ncyan}\scriptsize\ttfamily id             & \color{tm}\scriptsize\ttfamily uuid PK      & \color{tm}\scriptsize gen\_random\_uuid() \\
+  \color{ncyan}\scriptsize\ttfamily user\_id        & \color{tm}\scriptsize\ttfamily uuid FK      & \color{tm}\scriptsize auth.users \\
+  \color{ngreen}\scriptsize\ttfamily amount         & \color{tm}\scriptsize\ttfamily decimal      & \color{tm}\scriptsize en euros \\
+  \color{ngreen}\scriptsize\ttfamily original\_amount & \color{tm}\scriptsize\ttfamily decimal    & \color{tm}\scriptsize divisa original \\
+  \color{nyellow}\scriptsize\ttfamily currency      & \color{tm}\scriptsize\ttfamily text         & \color{tm}\scriptsize EUR / RON / USD \\
+  \color{npurple}\scriptsize\ttfamily category      & \color{tm}\scriptsize\ttfamily text         & \color{tm}\scriptsize Alimentación\ldots \\
+  \color{npurple}\scriptsize\ttfamily subcategory   & \color{tm}\scriptsize\ttfamily text         & \color{tm}\scriptsize Restaurantes\ldots \\
+  \color{tw}\scriptsize\ttfamily description        & \color{tm}\scriptsize\ttfamily text         & \color{tm}\scriptsize generada por NLP \\
+  \color{tm}\scriptsize\ttfamily raw\_text          & \color{tm}\scriptsize\ttfamily text         & \color{tm}\scriptsize texto original \\
+  \color{norange}\scriptsize\ttfamily date          & \color{tm}\scriptsize\ttfamily timestamptz  & \color{tm}\scriptsize momento del gasto \\
+\end{tabular}
+\vspace{3pt}
+
+{\color{ngreen}\scriptsize\bfseries RLS:}~~{\color{tm}\scriptsize\ttfamily
+USING (auth.uid() = user\_id)}
+\end{tcolorbox}
+
+\end{multicols}
+
+\vspace{8pt}
+\nline[ngreen]
+\vspace{6pt}
+
+\begin{multicols}{4}
+\begin{tcolorbox}[card,colframe=ngreen!20,halign=center]
+  {\color{ngreen}\LARGE\bfseries 8}\\
+  {\color{tm}\scriptsize Categorías\\principales}
+\end{tcolorbox}
+\columnbreak
+\begin{tcolorbox}[card,colframe=ncyan!20,halign=center]
+  {\color{ncyan}\LARGE\bfseries 40+}\\
+  {\color{tm}\scriptsize Subcategorías\\detectadas}
+\end{tcolorbox}
+\columnbreak
+\begin{tcolorbox}[card,colframe=npurple!20,halign=center]
+  {\color{npurple}\LARGE\bfseries 3}\\
+  {\color{tm}\scriptsize Divisas\\soportadas}
+\end{tcolorbox}
+\columnbreak
+\begin{tcolorbox}[card,colframe=norange!20,halign=center]
+  {\color{norange}\LARGE\bfseries $\infty$}\\
+  {\color{tm}\scriptsize Dispositivos\\sincronizados}
+\end{tcolorbox}
+\end{multicols}
+
+\vspace{8pt}
+
+\begin{center}
+  {\color{tm}\small\faGlobe}~~{\color{ncyan}\small\texttt{https://gastolens.vercel.app}}%
+  ~~{\color{bdr2}$|$}~~%
+  {\color{tm}\small\faGithub}~~{\color{tm}\small React + Vite + Supabase}%
+  ~~{\color{bdr2}$|$}~~%
+  {\color{tm}\small\faMobileAlt}~~{\color{tm}\small Responsive $\cdot$ PWA $\cdot$ Offline-ready}
+\end{center}
+
+\end{document}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- iOS-style rounded square background -->
+  <rect width="512" height="512" rx="114" fill="#080808"/>
+
+  <!-- Magnifying glass circle — thick, rounded -->
+  <circle cx="214" cy="210" r="108" stroke="#00ff88" stroke-width="28" fill="none"/>
+
+  <!-- Trend line inside the lens -->
+  <polyline
+    points="136,258 184,196 232,228 292,148"
+    stroke="#00ff88"
+    stroke-width="26"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"/>
+
+  <!-- Anchor dot at trend start -->
+  <circle cx="136" cy="258" r="14" fill="#00ff88"/>
+
+  <!-- Lens handle — thick, rounded caps -->
+  <line x1="298" y1="298" x2="378" y2="386"
+        stroke="#00ff88"
+        stroke-width="32"
+        stroke-linecap="round"/>
+</svg>
