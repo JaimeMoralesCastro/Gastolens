@@ -77,21 +77,7 @@ export async function classifyOne(desc, amount = 0) {
   return results?.[0] ?? null;
 }
 
-export async function validateApiKey(key) {
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: 'di "ok"' }] }],
-          generationConfig: { maxOutputTokens: 5 },
-        }),
-      }
-    );
-    return res.ok;
-  } catch {
-    return false;
-  }
+export function validateApiKey(key) {
+  // Validación local: las keys de Google AI Studio empiezan por "AIza" y tienen ~39 chars
+  return Promise.resolve(key.startsWith('AIza') && key.length > 30);
 }
