@@ -78,6 +78,5 @@ export async function classifyOne(desc, amount = 0) {
 }
 
 export function validateApiKey(key) {
-  // Validación local: las keys de Google AI Studio empiezan por "AIza" y tienen ~39 chars
-  return Promise.resolve(key.startsWith('AIza') && key.length > 30);
+  return Promise.resolve(key.trim().length > 20);
 }
