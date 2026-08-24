@@ -1,4 +1,4 @@
-const CACHE = 'gastolens-v3';
+const CACHE = 'gastolens-v5';
 const PRECACHE = ['/', '/index.html'];
 
 self.addEventListener('install', e => {
@@ -13,6 +13,29 @@ self.addEventListener('activate', e => {
     )
   );
   self.clients.claim();
+});
+
+// Share Target: recibe archivo compartido desde otra app
+self.addEventListener('fetch', e => {
+  if (e.request.method === 'POST' && new URL(e.request.url).pathname === '/share-target') {
+    e.respondWith((async () => {
+      const fd = await e.request.formData();
+      const file = fd.get('file');
+      if (file) {
+        const buf = await file.arrayBuffer();
+        // Guardar en cache temporal para que la app lo lea
+        const cache = await caches.open('gastolens-share');
+        await cache.put('pending-file', new Response(buf, {
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream',
+            'X-File-Name': file.name,
+          }
+        }));
+      }
+      return Response.redirect('/?import=1', 303);
+    })());
+    return;
+  }
 });
 
 self.addEventListener('fetch', e => {

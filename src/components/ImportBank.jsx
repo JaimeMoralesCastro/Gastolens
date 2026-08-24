@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Upload, X, Check, AlertCircle, Loader2, FileText } from 'lucide-react';
 import { classifyFromDescription } from '../utils/nlpParser.js';
@@ -110,6 +110,26 @@ export default function ImportBank({ onImport, existingExpenses }) {
   const [selected, setSelected] = useState(new Set());
   const [progress, setProgress] = useState(0);
   const [error, setError]   = useState(null);
+
+  // Detectar archivo compartido desde otra app (Web Share Target)
+  useEffect(() => {
+    if (!window.location.search.includes('import=1')) return;
+    // Limpiar el parámetro de la URL sin recargar
+    window.history.replaceState({}, '', '/');
+    (async () => {
+      try {
+        const cache = await caches.open('gastolens-share');
+        const res = await cache.match('pending-file');
+        if (!res) return;
+        const name = res.headers.get('X-File-Name') ?? 'file.csv';
+        const buf  = await res.arrayBuffer();
+        await cache.delete('pending-file');
+        const blob = new Blob([buf], { type: res.headers.get('Content-Type') });
+        const file = new File([blob], name);
+        handleFile(file);
+      } catch {}
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleFile(file) {
     if (!file) return;
