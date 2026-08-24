@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Upload, X, Check, AlertCircle, Loader2, FileText } from 'lucide-react';
 import { classifyFromDescription } from '../utils/nlpParser.js';
+import { classifyBatch, hasGeminiKey } from '../utils/geminiClassifier.js';
 import { CATEGORIES } from '../utils/categoryConfig.js';
 
 // ── Parsers ──────────────────────────────────────────────────────────────────
@@ -86,8 +87,8 @@ function parseRevolut(text) {
   return results;
 }
 
-function buildExpense(raw) {
-  const { category, subcategory } = classifyFromDescription(raw.desc);
+function buildExpense(raw, classification) {
+  const { category, subcategory } = classification ?? classifyFromDescription(raw.desc);
   return {
     description: raw.desc,
     amount: raw.amount,
@@ -99,6 +100,21 @@ function buildExpense(raw) {
     date: raw.date,
     bank: raw.bank,
   };
+}
+
+async function classifyAll(raws) {
+  if (hasGeminiKey()) {
+    const BATCH = 20;
+    const classifications = [];
+    for (let i = 0; i < raws.length; i += BATCH) {
+      const slice = raws.slice(i, i + BATCH);
+      const res = await classifyBatch(slice);
+      if (res) classifications.push(...res);
+      else raws.slice(i, i + BATCH).forEach(r => classifications.push(classifyFromDescription(r.desc)));
+    }
+    return raws.map((r, i) => buildExpense(r, classifications[i]));
+  }
+  return raws.map(r => buildExpense(r, null));
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -160,23 +176,25 @@ export default function ImportBank({ onImport, existingExpenses }) {
     }
   }
 
-  function finish(raw) {
+  async function finish(raw) {
     if (raw.length === 0) {
       setError('No se encontraron gastos en el archivo. Comprueba que es un extracto válido de BBVA o Revolut.');
       return;
     }
-    // Dedup: skip rows already in DB (same date + amount + description)
+    // Dedup
     const existing = new Set(
       existingExpenses.map(e => `${e.date?.substring(0,10)}|${e.amount}|${e.description}`)
     );
-    const expenses = raw.map(buildExpense).filter(e => {
-      const key = `${e.date?.substring(0,10)}|${e.amount}|${e.description}`;
-      return !existing.has(key);
+    const filtered = raw.filter(r => {
+      const exp = buildExpense(r, null);
+      return !existing.has(`${exp.date?.substring(0,10)}|${exp.amount}|${exp.description}`);
     });
-    if (expenses.length === 0) {
+    if (filtered.length === 0) {
       setError('Todos los gastos del archivo ya están importados.');
       return;
     }
+    setStep('classifying');
+    const expenses = await classifyAll(filtered);
     setRows(expenses);
     setSelected(new Set(expenses.map((_, i) => i)));
     setStep('preview');
@@ -217,6 +235,15 @@ export default function ImportBank({ onImport, existingExpenses }) {
         <button onClick={reset} className="text-[10px] tracking-widest text-white/30 hover:text-white/60 transition-colors uppercase">
           Importar otro archivo
         </button>
+      </div>
+    );
+  }
+
+  if (step === 'classifying') {
+    return (
+      <div className="bg-dark-700 border border-white/[0.06] rounded-xl px-4 py-6 flex flex-col items-center gap-3">
+        <Loader2 size={20} className="animate-spin" style={{ color: '#a855f7' }} />
+        <p className="text-white/50 text-xs tracking-wider">Analizando con Gemini AI…</p>
       </div>
     );
   }

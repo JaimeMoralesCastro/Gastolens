@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Wallet, Trash2, LogOut, User, Clock, ShieldCheck, Pencil, Check, X } from 'lucide-react';
+import { Wallet, Trash2, LogOut, User, Clock, ShieldCheck, Pencil, Check, X, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { displayName, supabase } from './lib/supabase.js';
 import Navigation from './components/Navigation.jsx';
 import BalanceCards from './components/BalanceCards.jsx';
@@ -10,6 +10,7 @@ import ExpenseDetail from './components/ExpenseDetail.jsx';
 import AuthScreen from './components/AuthScreen.jsx';
 import { useExpenses } from './hooks/useExpenses.js';
 import { useAuth } from './contexts/AuthContext.jsx';
+import { validateApiKey } from './utils/geminiClassifier.js';
 import { CATEGORIES } from './utils/categoryConfig.js';
 import { formatDate, formatTime, formatCurrency } from './utils/dateHelpers.js';
 import ImportBank from './components/ImportBank.jsx';
@@ -120,6 +121,92 @@ function AppInner({ tab, setTab, selectedExpense, setSelectedExpense, logout, us
           onClose={() => setSelectedExpense(null)}
           onDelete={id => { deleteExpense(id); setSelectedExpense(null); }}
         />
+      )}
+    </div>
+  );
+}
+
+function GeminiKeySection() {
+  const [key, setKey]         = useState(localStorage.getItem('gemini_api_key') ?? '');
+  const [show, setShow]       = useState(false);
+  const [status, setStatus]   = useState(key ? 'saved' : 'idle'); // idle | checking | ok | error | saved
+  const [editing, setEditing] = useState(!key);
+
+  const save = async () => {
+    const trimmed = key.trim();
+    if (!trimmed) return;
+    setStatus('checking');
+    const ok = await validateApiKey(trimmed);
+    if (ok) {
+      localStorage.setItem('gemini_api_key', trimmed);
+      setStatus('saved');
+      setEditing(false);
+    } else {
+      setStatus('error');
+    }
+  };
+
+  const remove = () => {
+    localStorage.removeItem('gemini_api_key');
+    setKey('');
+    setStatus('idle');
+    setEditing(true);
+  };
+
+  return (
+    <div className="bg-dark-700 border border-white/[0.06] rounded-xl px-4 py-4 mb-4">
+      <div className="flex items-center gap-2 mb-3">
+        <Sparkles size={13} style={{ color: '#a855f7' }} />
+        <p className="text-white/30 text-[10px] tracking-widest uppercase">Gemini AI — Categorización automática</p>
+        {status === 'saved' && !editing && (
+          <span className="ml-auto text-[10px] tracking-wider" style={{ color: '#00ff88' }}>● Activo</span>
+        )}
+      </div>
+
+      {!editing && status === 'saved' ? (
+        <div className="flex items-center justify-between">
+          <p className="text-white/35 text-xs">API key configurada correctamente</p>
+          <button onClick={() => setEditing(true)} className="text-[10px] tracking-wider text-white/25 hover:text-white/60 transition-colors">
+            Cambiar
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <div className="relative">
+            <input
+              type={show ? 'text' : 'password'}
+              value={key}
+              onChange={e => { setKey(e.target.value); setStatus('idle'); }}
+              placeholder="AIza..."
+              className="w-full bg-dark-600 border border-white/10 rounded-lg px-3 py-2 text-xs text-white/70 focus:outline-none focus:border-white/25 pr-10"
+              style={{ caretColor: '#a855f7', fontFamily: 'monospace' }}
+            />
+            <button onClick={() => setShow(s => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60">
+              {show ? <EyeOff size={12} /> : <Eye size={12} />}
+            </button>
+          </div>
+          {status === 'error' && (
+            <p className="text-red-400/70 text-[10px]">API key inválida. Comprueba que es correcta en Google AI Studio.</p>
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={save}
+              disabled={!key.trim() || status === 'checking'}
+              className="flex-1 py-2 rounded-lg text-[10px] tracking-widest uppercase transition-all disabled:opacity-30"
+              style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', color: '#a855f7' }}
+            >
+              {status === 'checking' ? 'Verificando…' : 'Guardar'}
+            </button>
+            {localStorage.getItem('gemini_api_key') && (
+              <button onClick={remove} className="px-3 py-2 rounded-lg border border-red-500/20 text-red-400/50 hover:text-red-400 text-[10px] transition-colors">
+                Eliminar
+              </button>
+            )}
+          </div>
+          <p className="text-white/15 text-[10px] leading-relaxed">
+            Obtén tu API key gratis en <span className="text-white/30">aistudio.google.com</span> → Get API key. Se guarda solo en este dispositivo.
+          </p>
+        </div>
       )}
     </div>
   );
@@ -277,6 +364,9 @@ function ProfileTab({ user, logout, expenses, addExpense }) {
           </div>
         </div>
       </div>
+
+      {/* Gemini AI */}
+      <GeminiKeySection />
 
       {/* Importar extracto */}
       <div className="bg-dark-700 border border-white/[0.06] rounded-xl px-4 py-4 mb-4">
