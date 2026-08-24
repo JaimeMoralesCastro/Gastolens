@@ -144,6 +144,10 @@ const DESCRIPTION_MAP = {
   },
 };
 
+export function classifyFromDescription(text) {
+  return classifyExpense(text);
+}
+
 function classifyExpense(text) {
   const lower = text.toLowerCase();
   let best = { category: 'Otros', subcategory: 'General', score: 0 };

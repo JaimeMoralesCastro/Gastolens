@@ -12,6 +12,7 @@ import { useExpenses } from './hooks/useExpenses.js';
 import { useAuth } from './contexts/AuthContext.jsx';
 import { CATEGORIES } from './utils/categoryConfig.js';
 import { formatDate, formatTime, formatCurrency } from './utils/dateHelpers.js';
+import ImportBank from './components/ImportBank.jsx';
 
 export default function App() {
   const { user, logout } = useAuth();
@@ -108,7 +109,7 @@ function AppInner({ tab, setTab, selectedExpense, setSelectedExpense, logout, us
 
         {/* Perfil */}
         {tab === 'profile' && (
-          <ProfileTab user={user} logout={logout} expenses={expenses} />
+          <ProfileTab user={user} logout={logout} expenses={expenses} addExpense={addExpense} />
         )}
       </main>
 
@@ -146,7 +147,7 @@ function RecentRow({ expense, onDelete, onSelect }) {
   );
 }
 
-function ProfileTab({ user, logout, expenses }) {
+function ProfileTab({ user, logout, expenses, addExpense }) {
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName]         = useState('');
   const [savingName, setSavingName]   = useState(false);
@@ -275,6 +276,12 @@ function ProfileTab({ user, logout, expenses }) {
             <p className="text-white/65 text-xs mt-0.5">Cloud · Sincronización activa</p>
           </div>
         </div>
+      </div>
+
+      {/* Importar extracto */}
+      <div className="bg-dark-700 border border-white/[0.06] rounded-xl px-4 py-4 mb-4">
+        <p className="text-white/30 text-[10px] tracking-widest uppercase mb-3">Importar extracto bancario</p>
+        <ImportBank onImport={addExpense} existingExpenses={expenses} />
       </div>
 
       {/* Próximamente */}
