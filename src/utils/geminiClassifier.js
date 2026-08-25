@@ -23,17 +23,28 @@ export async function classifyBatch(transactions) {
     .map((t, i) => `${i + 1}. "${t.desc}" (${t.amount.toFixed(2)} €)`)
     .join('\n');
 
-  const prompt = `Eres un clasificador de gastos bancarios para un usuario español.
-Clasifica cada gasto en UNA de las categorías y subcategorías de esta lista (respeta exactamente los nombres):
+  const prompt = `Eres un clasificador experto de gastos bancarios de un usuario español.
+Tu tarea: clasificar cada transacción en la categoría y subcategoría más específica posible.
 
+REGLAS IMPORTANTES:
+- Los nombres de lugares (playas, terrazas, bares, cafeterías, restaurantes) → Alimentación > Bar/Copas o Restaurante o Cafetería
+- Si el nombre suena a local de hostelería español (terraza, beach bar, taberna, mesón, etc.) → Alimentación > Bar/Copas
+- "Otros > General" es el ÚLTIMO recurso, solo si realmente no hay pista alguna
+- Winamax, Codere, bet365 → Ocio > Apuestas
+- TUS, EMT, Monbus → Transporte > Bus/Metro
+- Expendeduría, estanco → Tabaco > Estanco
+- Nombres de supermercados gallegos (Gadis, Froiz) → Alimentación > Supermercado
+- Amazon, Temu, Aliexpress → Compras > Amazon/Online
+- Sé MUY específico: un nombre ambiguo de local → bar o restaurante, nunca "Otros"
+
+Categorías disponibles:
 ${SCHEMA_STR}
 
-Transacciones:
+Transacciones a clasificar:
 ${list}
 
-Responde SOLO con un array JSON, un objeto por transacción, en el mismo orden:
-[{"category":"...","subcategory":"..."},...]
-Sin explicaciones, sin markdown, solo el JSON.`;
+Responde SOLO con un array JSON en el mismo orden, sin markdown:
+[{"category":"...","subcategory":"..."},...]`;
 
   try {
     const res = await fetch(
