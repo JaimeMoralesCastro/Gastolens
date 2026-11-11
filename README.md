@@ -21,6 +21,16 @@ speak it, and the app does the rest.
 
 ---
 
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/parser.jpg" alt="The parser reading a sentence written in slang"><br><sub><b>The parser</b> — <i>"treinta y cinco pavos en cañas"</i> becomes 35.00 €, Food · Bar/Drinks, before you press anything.</sub></td>
+<td width="33%"><img src="docs/screenshots/dashboard.jpg" alt="Dashboard with daily, weekly and monthly totals"><br><sub><b>Dashboard</b> — today, this week, this month, and where the money went.</sub></td>
+<td width="33%"><img src="docs/screenshots/historial.jpg" alt="Expense history showing amounts converted from dollars and lei"><br><sub><b>History</b> — 20 USD and 50 RON land as euros, with the original amount kept.</sub></td>
+</tr>
+</table>
+
+<sub>Screenshots taken against sample data.</sub>
+
 ## The idea
 
 Every budgeting app asks for an amount, a category and a date in three separate

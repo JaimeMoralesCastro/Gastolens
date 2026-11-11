@@ -21,6 +21,16 @@ y la app hace el resto.
 
 ---
 
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/parser.jpg" alt="El parser leyendo una frase en jerga"><br><sub><b>El parser</b> — <i>"treinta y cinco pavos en cañas"</i> se convierte en 35,00 €, Alimentación · Bar/Copas, antes de pulsar nada.</sub></td>
+<td width="33%"><img src="docs/screenshots/dashboard.jpg" alt="Panel con totales de hoy, semana y mes"><br><sub><b>Dashboard</b> — hoy, esta semana, este mes, y en qué se ha ido el dinero.</sub></td>
+<td width="33%"><img src="docs/screenshots/historial.jpg" alt="Historial con importes convertidos desde dólares y lei"><br><sub><b>Historial</b> — 20 USD y 50 RON entran como euros, guardando el importe original.</sub></td>
+</tr>
+</table>
+
+<sub>Capturas sobre datos de ejemplo.</sub>
+
 ## La idea
 
 Todas las apps de gastos piden importe, categoría y fecha en tres campos
